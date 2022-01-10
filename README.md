@@ -11,7 +11,7 @@ Please note this was a script that was done in my spare time and while it has ha
 
 GAShell acts as Google Authenticator code generator and manager allowing you to generate, add and remove your Google Authenticator codes inside your bash shell/terminal. GAShell stores your codes on your filesystem encrypted by a private passphrase (that you set yourself) with aes-256 under ~/.config/gashell. It also has the ability to read in google auth QR codes either via URL or through a local image.
 
-You will require the following applications/binaries to use this script: sed, oathtool, openssl, zbar, curl. As well as a basic set of *nix system commands.
+You will require the following applications/binaries to use this script: sed, oathtool, openssl, zbar, curl, xclip. As well as a basic set of *nix system commands.
 
     Usage: ./gashell.sh args
 
@@ -20,6 +20,7 @@ You will require the following applications/binaries to use this script: sed, oa
     -i: Add a new key via QR code (url or file path).
     -r: Remove a key.
     -o: Output codes once only.
+    -c: Copy code to clipboard (xclip)
     -p: Set a new password.
     -h: Show this help screen.
 
