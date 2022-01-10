@@ -397,7 +397,7 @@ if [ $# -gt 0 ]; then
 		#Show Codes
 		ShowCodes;
 
-		#set index if gived on command call or ask for it
+		#set index if given on command call or ask for it
 		if [ $# -gt 1 ] && [[ $2 =~ $re ]]; then
 			COPYSELECTION=$2
 		else
