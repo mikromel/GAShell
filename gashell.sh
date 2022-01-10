@@ -5,7 +5,7 @@
 #This Program/Script Is Lisenced Under GNU V3 (https://www.gnu.org/licenses/gpl-3.0.en.html) and comes with ABSOLUTELY NO WARRANTY. You may distribute, modify and run it however you must not claim it as your own nor sublisence it.
 
 #Path Vars
-REQBINS=("sed" "oathtool" "openssl" "zbarimg" "curl");
+REQBINS=("sed" "oathtool" "openssl" "zbarimg" "curl" "xclip");
 CONFIGDIR="$HOME/.config/gashell";
 SALTFILE="$CONFIGDIR/salt";
 SALTLENGTH=1024;
@@ -22,6 +22,7 @@ HELPTEXT="
 	-i:\tAdd a new key via QR code (url or file path).
 	-r:\tRemove a key.
 	-o:\tOutput codes once only.
+	-c:\tCopy code to clipboard.
 	-p:\tSet a new password.
 	-h:\tShow this help screen.
 
@@ -29,6 +30,9 @@ HELPTEXT="
 
 	Note: Cannot currently stack flags.
 ";
+
+#regular expression to check for numbers
+numbers='^[0-9]+$'
 
 #Changeable vars
 PASSWORDSMATCH=0;
@@ -44,6 +48,7 @@ TEMPARR=();
 SLEEPTIME=1;
 EXIT=0;
 REMSELECTION=-1;
+COPYSELECTION=-1;
 QRLOC="";
 
 #New Salt function
@@ -201,6 +206,15 @@ ShowCodes() {
 	done
 }
 #//ShowCodes()_END
+
+GetCode() {
+	if [[ $1 =~ $re ]] && [ $1 -lt $CODESLENGTH ]; then
+		AUTHCODE=$(oathtool -c 30 --base32 --totp ${AUTHCODES[$1]});
+	else
+		echo "ERROR! Given index not a number or out of range";
+	fi
+}
+#//GetCode()_END
 
 #Check all required binaries are present
 for bin in "${REQBINS[@]}"; do
@@ -379,6 +393,26 @@ if [ $# -gt 0 ]; then
 	elif [ "$1" == "-o" ]; then
 		#Output once only
 		ShowCodes;
+	elif [ "$1" == "-c" ]; then
+		#Show Codes
+		ShowCodes;
+
+		#set index if gived on command call or ask for it
+		if [ $# -gt 1 ] && [[ $2 =~ $re ]]; then
+			COPYSELECTION=$2
+		else
+			echo -e "\nEnter code to copy 1-$CODESLENGTH:";
+			read COPYSELECTION;
+		fi
+
+		#Lower index by 1 as we start counting from 0.
+		COPYSELECTION=$(($COPYSELECTION-1));
+
+		#gets the code by index
+		GetCode $COPYSELECTION;
+
+		#copy to clipboard
+		echo $AUTHCODE | xclip -sel clip;
 	fi
 else
 	
