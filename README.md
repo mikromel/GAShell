@@ -27,3 +27,4 @@ You will require the following applications/binaries to use this script: sed, oa
     You can remove the need to enter the password on output operations by specifying it in the following variable: GASHELL_PASSPHRASE. Please note that this script will automatically take the password from this variable if defined.
 
     Note: Cannot currently stack flags.
+test
